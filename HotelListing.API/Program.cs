@@ -1,3 +1,5 @@
+using HotelListing.API.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 ///they can be accessed (IOC Container - 'inversion-of-control' container).
 
 // Add services to the container.
+
+//kw - Note that 'HotelListingDbConnectionString' is defined in appsetting.json
+var connectionString = builder.Configuration.GetConnectionString("HotelListingDbConnectionString");
+builder.Services.AddDbContext<HotelListingDbContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+});
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -18,7 +28,7 @@ builder.Services.AddSwaggerGen();
 /////////////// CORS //////////////////
 //kw - Prepare this API for 3rd Party access, ie apps call this API from machines that are NOT on same server as this API.
 //kw - Create the 'POLICY' and add it to the 'Services'
-//  "AllowAll" is the POLICY NAME - You can name it anything you want.
+//  "AllowAll" is the POLICY NAME - You can name it anything you want (...I think).
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
@@ -33,12 +43,12 @@ builder.Host.UseSerilog((ctx, lc) => lc.WriteTo.Console().ReadFrom.Configuration
 
 
 
-var app = builder.Build(); //So, by the time it hits THIS line, the app has everything it needs.
+var app = builder.Build(); //So, by the time it hits THIS line, the app has everything it needs to Build.
 
 //////////////////// All the "middleware" stuff goes here ///////////////
 // Configure the HTTP "request pipeline" ("middleware").
 //kw NOTE: You can create CUSTOMIZED "middleware" if you want.
-if (app.Environment.IsDevelopment()) //kw - Remove this condition if you want Swagger in Production
+if (app.Environment.IsDevelopment()) //kw - Remove this condition if you want Swagger in PRODUCTION. Else leave 'IsDevelopment'.
 {
     app.UseSwagger();
     app.UseSwaggerUI();
