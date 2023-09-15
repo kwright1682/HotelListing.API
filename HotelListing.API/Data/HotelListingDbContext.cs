@@ -24,7 +24,7 @@ namespace HotelListing.API.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            //kw - when we're building the model, this is what I want you to do...
+            //kw - when we're building the model, this is what I want you to do...Like a Delphi 'OnCreate()'
             //  ...start with some default "seed" data (manual code-entry here - fake data).
             //array of Countries (rows of data)
             //
