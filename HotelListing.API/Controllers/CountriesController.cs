@@ -215,7 +215,7 @@ namespace HotelListing.API.Controllers
             //Take a COPY of the db context, initialize it, and then do the operation
             //This says, "hey database, get me the table called 'Countries', and ADD this NEW Country". 
             //_context.Countries.Add(newCountry); //kw - 'Add' is the 'operation' - QUEUE up the operation
-            this._countriesRepository.AddAsync(newCountry); //_countriesRepository replaces the orig _context, after refactoring.
+            await this._countriesRepository.AddAsync(newCountry); //_countriesRepository replaces the orig _context, after refactoring.
 
 
 

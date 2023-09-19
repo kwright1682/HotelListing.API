@@ -4,6 +4,7 @@ using HotelListing.API.Data;
 using HotelListing.API.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using HotelListing.API.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +55,7 @@ builder.Services.AddAutoMapper(typeof(MapperConfig)); //Don't forget to add 'usi
 //add Repositories -    AddScoped(interface, implementation-type)
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICountriesRepository, CountriesRepository>(); // Addscoped<Interface, implementation>
+builder.Services.AddScoped<IHotelsRepository, HotelsRepository>(); // Addscoped<Interface, implementation>
 
 
 var app = builder.Build(); //So, by the time it hits THIS line, the app has everything it needs to Build.
@@ -68,11 +70,18 @@ if (app.Environment.IsDevelopment()) //kw - Remove this condition if you want Sw
 }
 
 app.UseSerilogRequestLogging();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
 app.UseHttpsRedirection(); //ensure using https
 
 app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
+
 //////////////////// END "middleware" stuff ///////////////
 
 app.Run();
